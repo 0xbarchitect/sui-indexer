@@ -2,12 +2,11 @@ use crate::{
     config::NaviConfig,
     constant,
     service::{db_service, lending::LendingService},
-    types::{CalcHFResult, U256},
+    types::U256,
     utils::{self, ptb::PTBHelper},
 };
 use bigdecimal::BigDecimal;
-use db::models::{self, lending_market};
-use db::repositories::{CoinRepository, LendingMarketRepository};
+use db::repositories::CoinRepository;
 
 use anyhow::{anyhow, Result};
 use async_trait::async_trait;
@@ -50,7 +49,6 @@ pub struct NaviService {
     platform: String,
     config: Arc<NaviConfig>,
     client: Arc<SuiClient>,
-    market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
     coin_repo: Arc<dyn CoinRepository + Send + Sync>,
     db_service: Arc<db_service::lending::LendingService>,
     ptb_helper: Arc<PTBHelper>,
@@ -60,7 +58,6 @@ impl NaviService {
     pub fn new(
         config: Arc<NaviConfig>,
         client: Arc<SuiClient>,
-        market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
         coin_repo: Arc<dyn CoinRepository + Send + Sync>,
         db_service: Arc<db_service::lending::LendingService>,
         ptb_helper: Arc<PTBHelper>,
@@ -69,7 +66,6 @@ impl NaviService {
             platform: constant::NAVI_LENDING.to_string(),
             config,
             client,
-            market_repo,
             coin_repo,
             db_service,
             ptb_helper,
@@ -285,15 +281,13 @@ impl NaviService {
             elapsed.as_millis()
         );
 
-        let market = self
-            .db_service
-            .find_market_by_platform_and_asset_id(&self.platform, asset_id as i32)?;
+        let coin_model = self.coin_repo.find_by_navi_asset_id(asset_id as i32)?;
 
         // insert user deposit and borrow
         let user_deposit = crate::types::UserDeposit {
             platform: self.platform.clone(),
             borrower: borrower.to_string(),
-            coin_type: market.coin_type.clone(),
+            coin_type: coin_model.coin_type.clone(),
             amount: supply.to_string(),
             obligation_id: None,
         };
@@ -301,7 +295,7 @@ impl NaviService {
         let user_borrow = crate::types::UserBorrow {
             platform: self.platform.clone(),
             borrower: borrower.to_string(),
-            coin_type: market.coin_type.clone(),
+            coin_type: coin_model.coin_type.clone(),
             amount: borrow.to_string(),
             obligation_id: None,
             debt_borrow_index: None,

@@ -15,15 +15,12 @@ use mev_lib::{
 };
 
 use db::repositories::{
-    borrower::BorrowerRepositoryImpl, coin::CoinRepositoryImpl,
-    lending_market::LendingMarketRepositoryImpl, liquidation_event::LiquidationEventRepositoryImpl,
-    liquidation_order::LiquidationOrderRepositoryImpl, metric::MetricRepositoryImpl,
+    borrower::BorrowerRepositoryImpl, coin::CoinRepositoryImpl, metric::MetricRepositoryImpl,
     pool::PoolRepositoryImpl, pool_tick::PoolTickRepositoryImpl,
     shared_object::SharedObjectRepositoryImpl, user_borrow::UserBorrowRepositoryImpl,
-    user_deposit::UserDepositRepositoryImpl, BorrowerRepository, CoinRepository,
-    LendingMarketRepository, LiquidationEventRepository, LiquidationOrderRepository,
-    MetricRepository, PoolRepository, PoolTickRepository, SharedObjectRepository,
-    UserBorrowRepository, UserDepositRepository,
+    user_deposit::UserDepositRepositoryImpl, BorrowerRepository, CoinRepository, MetricRepository,
+    PoolRepository, PoolTickRepository, SharedObjectRepository, UserBorrowRepository,
+    UserDepositRepository,
 };
 use db::{establish_connection_pool, run_migrations};
 
@@ -86,17 +83,8 @@ async fn main() -> Result<()> {
     let pool_tick_repo: Arc<dyn PoolTickRepository + Send + Sync> =
         Arc::new(PoolTickRepositoryImpl::new(db_conn.clone()));
 
-    let lending_market_repo: Arc<dyn LendingMarketRepository + Send + Sync> =
-        Arc::new(LendingMarketRepositoryImpl::new(db_conn.clone()));
-
-    let liquidation_event_repo: Arc<dyn LiquidationEventRepository + Send + Sync> =
-        Arc::new(LiquidationEventRepositoryImpl::new(db_conn.clone()));
-
     let metric_repo: Arc<dyn MetricRepository + Send + Sync> =
         Arc::new(MetricRepositoryImpl::new(db_conn.clone()));
-
-    let liquidation_order_repo: Arc<dyn LiquidationOrderRepository + Send + Sync> =
-        Arc::new(LiquidationOrderRepositoryImpl::new(db_conn.clone()));
 
     let borrower_repo: Arc<dyn BorrowerRepository + Send + Sync> =
         Arc::new(BorrowerRepositoryImpl::new(db_conn.clone()));
@@ -121,12 +109,9 @@ async fn main() -> Result<()> {
 
     let db_lending_service = Arc::new(LendingService::new(
         Arc::clone(&config),
-        Arc::clone(&lending_market_repo),
         Arc::clone(&coin_repo),
-        Arc::clone(&liquidation_event_repo),
         Arc::clone(&user_borrow_repo),
         Arc::clone(&user_deposit_repo),
-        Arc::clone(&liquidation_order_repo),
         Arc::clone(&borrower_repo),
         Arc::clone(&metric_repo),
         Arc::clone(&shared_object_repo),
@@ -143,7 +128,6 @@ async fn main() -> Result<()> {
         Arc::clone(&sui_client),
         Arc::clone(&coin_repo),
         Arc::clone(&pool_repo),
-        Arc::clone(&lending_market_repo),
         Arc::clone(&db_pool_service),
         Arc::clone(&db_lending_service),
         Arc::clone(&ptb_helper),

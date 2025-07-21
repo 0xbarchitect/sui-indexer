@@ -2,12 +2,8 @@ use crate::{
     config::ScallopConfig,
     constant,
     service::{db_service, lending::LendingService},
-    types::{CalcHFResult, FixedPoint32, FixedPoint32Json, ObjectIDWrapper, TypeName},
+    types::{FixedPoint32, FixedPoint32Json, ObjectIDWrapper, TypeName},
     utils::{self, ptb::PTBHelper},
-};
-use db::{
-    models::{self, lending_market},
-    repositories::LendingMarketRepository,
 };
 
 use anyhow::{anyhow, Result};

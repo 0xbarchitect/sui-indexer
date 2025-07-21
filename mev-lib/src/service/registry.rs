@@ -6,7 +6,7 @@ use crate::{
 };
 use db::{
     models,
-    repositories::{CoinRepository, LendingMarketRepository, PoolRepository},
+    repositories::{CoinRepository, PoolRepository},
 };
 
 use anyhow::{anyhow, Result};
@@ -35,7 +35,6 @@ pub struct ServiceRegistry {
     pub config: Arc<Config>,
     pub coin_repo: Arc<dyn CoinRepository + Send + Sync>,
     pub pool_repo: Arc<dyn PoolRepository + Send + Sync>,
-    pub lending_market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
     pub db_pool_service: Arc<db_service::pool::PoolService>,
     pub db_lending_service: Arc<db_service::lending::LendingService>,
     pub ptb_helper: Arc<PTBHelper>,
@@ -50,7 +49,6 @@ impl ServiceRegistry {
         client: Arc<SuiClient>,
         coin_repo: Arc<dyn CoinRepository + Send + Sync>,
         pool_repo: Arc<dyn PoolRepository + Send + Sync>,
-        lending_market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
         db_pool_service: Arc<db_service::pool::PoolService>,
         db_lending_service: Arc<db_service::lending::LendingService>,
         ptb_helper: Arc<PTBHelper>,
@@ -163,7 +161,6 @@ impl ServiceRegistry {
         let navi_service = Arc::new(lending::navi::NaviService::new(
             Arc::clone(&navi_config),
             Arc::clone(&client),
-            Arc::clone(&lending_market_repo),
             Arc::clone(&coin_repo),
             Arc::clone(&db_lending_service),
             Arc::clone(&ptb_helper),
@@ -203,7 +200,6 @@ impl ServiceRegistry {
             config,
             coin_repo,
             pool_repo,
-            lending_market_repo,
             db_pool_service,
             db_lending_service,
             ptb_helper,

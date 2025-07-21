@@ -310,17 +310,8 @@ impl SuiLend {
                         )
                         .await?;
 
-                    let reserve_info = self
-                        .service
-                        .fetch_reserve_info(user_deposit.coin_type.clone())
-                        .await?;
-
                     self.db_service
                         .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    self.db_service
-                        .save_lending_market_to_db(reserve_info)
                         .await?;
 
                     Ok(OnchainEvent::LendingDeposit(
@@ -371,17 +362,8 @@ impl SuiLend {
                         )
                         .await?;
 
-                    let reserve_info = self
-                        .service
-                        .fetch_reserve_info(user_deposit.coin_type.clone())
-                        .await?;
-
                     self.db_service
                         .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    self.db_service
-                        .save_lending_market_to_db(reserve_info)
                         .await?;
 
                     Ok(OnchainEvent::LendingWithdraw(
@@ -431,17 +413,8 @@ impl SuiLend {
                         )
                         .await?;
 
-                    let reserve_info = self
-                        .service
-                        .fetch_reserve_info(user_borrow.coin_type.clone())
-                        .await?;
-
                     self.db_service
                         .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    self.db_service
-                        .save_lending_market_to_db(reserve_info)
                         .await?;
 
                     Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
@@ -489,17 +462,8 @@ impl SuiLend {
                         )
                         .await?;
 
-                    let reserve_info = self
-                        .service
-                        .fetch_reserve_info(user_borrow.coin_type.clone())
-                        .await?;
-
                     self.db_service
                         .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    self.db_service
-                        .save_lending_market_to_db(reserve_info)
                         .await?;
 
                     Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {

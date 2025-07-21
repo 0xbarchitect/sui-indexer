@@ -53,95 +53,6 @@ diesel::table! {
 }
 
 diesel::table! {
-    lending_markets (id) {
-        id -> Int4,
-        #[max_length = 64]
-        platform -> Varchar,
-        #[max_length = 256]
-        coin_type -> Varchar,
-        #[max_length = 64]
-        ltv -> Nullable<Varchar>,
-        #[max_length = 64]
-        liquidation_threshold -> Nullable<Varchar>,
-        #[max_length = 64]
-        borrow_weight -> Nullable<Varchar>,
-        #[max_length = 64]
-        liquidation_ratio -> Nullable<Varchar>,
-        #[max_length = 64]
-        liquidation_penalty -> Nullable<Varchar>,
-        #[max_length = 64]
-        liquidation_fee -> Nullable<Varchar>,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
-        asset_id -> Nullable<Int4>,
-        #[max_length = 66]
-        pool_id -> Nullable<Varchar>,
-        #[max_length = 64]
-        borrow_index -> Nullable<Varchar>,
-        #[max_length = 64]
-        supply_index -> Nullable<Varchar>,
-        flashloan_path -> Nullable<Jsonb>,
-        #[max_length = 64]
-        ctoken_supply -> Nullable<Varchar>,
-        #[max_length = 64]
-        available_amount -> Nullable<Varchar>,
-        #[max_length = 64]
-        borrowed_amount -> Nullable<Varchar>,
-        #[max_length = 64]
-        unclaimed_spread_fees -> Nullable<Varchar>,
-        #[max_length = 256]
-        pyth_feed_id -> Nullable<Varchar>,
-    }
-}
-
-diesel::table! {
-    liquidation_events (id) {
-        id -> Int4,
-        #[max_length = 128]
-        tx_digest -> Varchar,
-        #[max_length = 64]
-        platform -> Varchar,
-        #[max_length = 66]
-        borrower -> Nullable<Varchar>,
-        #[max_length = 66]
-        liquidator -> Nullable<Varchar>,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
-    }
-}
-
-diesel::table! {
-    liquidation_orders (id) {
-        id -> Int4,
-        #[max_length = 64]
-        platform -> Varchar,
-        #[max_length = 66]
-        borrower -> Varchar,
-        hf -> Float4,
-        #[max_length = 256]
-        debt_coin -> Varchar,
-        #[max_length = 256]
-        collateral_coin -> Varchar,
-        #[max_length = 64]
-        amount_repay -> Varchar,
-        #[max_length = 64]
-        source -> Varchar,
-        #[max_length = 128]
-        tx_digest -> Nullable<Varchar>,
-        checkpoint -> Nullable<Int8>,
-        #[max_length = 66]
-        bot_address -> Nullable<Varchar>,
-        finalized_at -> Nullable<Timestamp>,
-        created_at -> Nullable<Timestamp>,
-        updated_at -> Nullable<Timestamp>,
-        status -> Nullable<Int4>,
-        #[max_length = 64]
-        amount_usd -> Varchar,
-        error -> Nullable<Text>,
-    }
-}
-
-diesel::table! {
     metrics (id) {
         id -> Int4,
         latest_seq_number -> Int4,
@@ -256,9 +167,6 @@ diesel::table! {
 diesel::allow_tables_to_appear_in_same_query!(
     borrowers,
     coins,
-    lending_markets,
-    liquidation_events,
-    liquidation_orders,
     metrics,
     pool_ticks,
     pools,

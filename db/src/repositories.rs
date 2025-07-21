@@ -1,8 +1,5 @@
 pub mod borrower;
 pub mod coin;
-pub mod lending_market;
-pub mod liquidation_event;
-pub mod liquidation_order;
 pub mod metric;
 pub mod pool;
 pub mod pool_tick;
@@ -13,13 +10,6 @@ pub mod user_deposit;
 use crate::models::{
     borrower::{Borrower, NewBorrower, UpdateBorrower},
     coin::{Coin, NewCoin, UpdateCoin},
-    lending_market::{
-        LendingMarket, LendingMarketWithCoinInfo, NewLendingMarket, UpdateLendingMarket,
-    },
-    liquidation_event::{LiquidationEvent, NewLiquidationEvent, UpdateLiquidationEvent},
-    liquidation_order::{
-        LiquidationOrder, NewLiquidationOrder, TopLiquidationOrder, UpdateLiquidationOrder,
-    },
     metric::{Metric, NewMetric, UpdateMetric},
     pool::{NewPool, Pool, UpdatePool},
     pool_tick::{NewPoolTick, PoolTick, UpdatePoolTick},
@@ -170,70 +160,12 @@ pub trait PoolTickRepository {
     ) -> QueryResult<Option<PoolTick>>;
 }
 
-pub trait LendingMarketRepository {
-    fn create(&self, lending_market: &NewLendingMarket) -> QueryResult<LendingMarket>;
-    fn update(&self, id: i32, lending_market: &UpdateLendingMarket) -> QueryResult<LendingMarket>;
-    fn delete(&self, id: i32) -> QueryResult<bool>;
-    fn find_by_id(&self, id: i32) -> QueryResult<LendingMarket>;
-    fn find_all(&self) -> QueryResult<Vec<LendingMarket>>;
-
-    fn find_by_platform_and_coin_type(
-        &self,
-        platform: &str,
-        coin_type: &str,
-    ) -> QueryResult<LendingMarket>;
-
-    fn find_by_platform_and_coin_type_with_coin_info(
-        &self,
-        platform: &str,
-        coin_type: &str,
-    ) -> QueryResult<LendingMarketWithCoinInfo>;
-
-    fn find_by_platform_and_asset_id(
-        &self,
-        platform: &str,
-        asset_id: i32,
-    ) -> QueryResult<LendingMarket>;
-}
-
-pub trait LiquidationEventRepository {
-    fn create(&self, liquidation_event: &NewLiquidationEvent) -> QueryResult<LiquidationEvent>;
-    fn update(
-        &self,
-        id: i32,
-        liquidation_event: &UpdateLiquidationEvent,
-    ) -> QueryResult<LiquidationEvent>;
-    fn delete(&self, id: i32) -> QueryResult<bool>;
-    fn find_by_id(&self, id: i32) -> QueryResult<LiquidationEvent>;
-    fn find_all(&self) -> QueryResult<Vec<LiquidationEvent>>;
-    fn find_by_tx_digest(&self, tx_digest: &str) -> QueryResult<LiquidationEvent>;
-}
-
 pub trait MetricRepository {
     fn create(&self, metric: &NewMetric) -> QueryResult<Metric>;
     fn update(&self, id: i32, metric: &UpdateMetric) -> QueryResult<Metric>;
     fn delete(&self, id: i32) -> QueryResult<bool>;
     fn find_by_id(&self, id: i32) -> QueryResult<Metric>;
     fn find_latest_seq_number(&self) -> QueryResult<Option<Metric>>;
-}
-
-pub trait LiquidationOrderRepository {
-    fn create(&self, liquidation_order: &NewLiquidationOrder) -> QueryResult<LiquidationOrder>;
-    fn update(
-        &self,
-        id: i32,
-        liquidation_order: &UpdateLiquidationOrder,
-    ) -> QueryResult<LiquidationOrder>;
-    fn delete(&self, id: i32) -> QueryResult<bool>;
-    fn find_by_id(&self, id: i32) -> QueryResult<LiquidationOrder>;
-
-    fn find_by_platform_and_address(
-        &self,
-        platform: &str,
-        address: &str,
-    ) -> QueryResult<LiquidationOrder>;
-
-    fn find_top_orders_by_hf(&self, limit: i32) -> QueryResult<Vec<TopLiquidationOrder>>;
 }
 
 pub trait BorrowerRepository {

@@ -2,7 +2,7 @@ use crate::{
     config::SuilendConfig,
     constant, indexer,
     service::{db_service, lending::LendingService},
-    types::{self, CalcHFResult, ObjectIDWrapper, OnchainDecimal, PythPriceIdentifier, TypeName},
+    types::{ObjectIDWrapper, OnchainDecimal, PythPriceIdentifier, TypeName},
     utils::{self, ptb::PTBHelper},
 };
 use db::models;

@@ -8,17 +8,11 @@ use db::models::{
     self,
     borrower::{Borrower, NewBorrower, UpdateBorrower},
     coin::{Coin, NewCoin, UpdateCoin},
-    lending_market::{
-        LendingMarket, LendingMarketWithCoinInfo, NewLendingMarket, UpdateLendingMarket,
-    },
-    liquidation_event::{LiquidationEvent, NewLiquidationEvent, UpdateLiquidationEvent},
-    liquidation_order::{LiquidationOrder, NewLiquidationOrder, UpdateLiquidationOrder},
     user_borrow, user_deposit,
 };
 use db::repositories::{
-    BorrowerRepository, CoinRepository, LendingMarketRepository, LiquidationEventRepository,
-    LiquidationOrderRepository, MetricRepository, SharedObjectRepository, UserBorrowRepository,
-    UserDepositRepository,
+    BorrowerRepository, CoinRepository, MetricRepository, SharedObjectRepository,
+    UserBorrowRepository, UserDepositRepository,
 };
 
 use anyhow::{anyhow, Result};
@@ -33,12 +27,9 @@ use tracing::{debug, error, info, instrument, trace, warn};
 
 pub struct LendingService {
     config: Arc<Config>,
-    lending_market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
     coin_repo: Arc<dyn CoinRepository + Send + Sync>,
-    liquidation_event_repo: Arc<dyn LiquidationEventRepository + Send + Sync>,
     user_borrow_repo: Arc<dyn UserBorrowRepository + Send + Sync>,
     user_deposit_repo: Arc<dyn UserDepositRepository + Send + Sync>,
-    liquidation_order_repo: Arc<dyn LiquidationOrderRepository + Send + Sync>,
     borrower_repo: Arc<dyn BorrowerRepository + Send + Sync>,
     metric_repo: Arc<dyn MetricRepository + Send + Sync>,
     shared_object_repo: Arc<dyn SharedObjectRepository + Send + Sync>,
@@ -47,24 +38,18 @@ pub struct LendingService {
 impl LendingService {
     pub fn new(
         config: Arc<Config>,
-        lending_market_repo: Arc<dyn LendingMarketRepository + Send + Sync>,
         coin_repo: Arc<dyn CoinRepository + Send + Sync>,
-        liquidation_event_repo: Arc<dyn LiquidationEventRepository + Send + Sync>,
         user_borrow_repo: Arc<dyn UserBorrowRepository + Send + Sync>,
         user_deposit_repo: Arc<dyn UserDepositRepository + Send + Sync>,
-        liquidation_order_repo: Arc<dyn LiquidationOrderRepository + Send + Sync>,
         borrower_repo: Arc<dyn BorrowerRepository + Send + Sync>,
         metric_repo: Arc<dyn MetricRepository + Send + Sync>,
         shared_object_repo: Arc<dyn SharedObjectRepository + Send + Sync>,
     ) -> Self {
         LendingService {
             config,
-            lending_market_repo,
             coin_repo,
-            liquidation_event_repo,
             user_borrow_repo,
             user_deposit_repo,
-            liquidation_order_repo,
             borrower_repo,
             metric_repo,
             shared_object_repo,
@@ -233,102 +218,6 @@ impl LendingService {
         };
 
         Ok(())
-    }
-
-    pub async fn save_lending_market_to_db(
-        &self,
-        lending_market: crate::types::LendingMarket,
-    ) -> Result<models::lending_market::LendingMarket> {
-        let market = match self
-            .lending_market_repo
-            .find_by_platform_and_coin_type(&lending_market.platform, &lending_market.coin_type)
-        {
-            Ok(existing_market) => {
-                let update_market = UpdateLendingMarket {
-                    platform: None,
-                    coin_type: None,
-                    ltv: lending_market.ltv.clone(),
-                    liquidation_threshold: lending_market.liquidation_threshold.clone(),
-                    borrow_weight: lending_market.borrow_weight.clone(),
-                    liquidation_ratio: lending_market.liquidation_ratio.clone(),
-                    liquidation_penalty: lending_market.liquidation_penalty.clone(),
-                    liquidation_fee: lending_market.liquidation_fee.clone(),
-                    asset_id: lending_market.asset_id,
-                    pool_id: lending_market.pool_id.clone(),
-                    borrow_index: lending_market.borrow_index.clone(),
-                    supply_index: lending_market.supply_index.clone(),
-                    flashloan_path: lending_market.flashloan_path.clone(),
-                    ctoken_supply: lending_market.ctoken_supply.clone(),
-                    available_amount: lending_market.available_amount.clone(),
-                    borrowed_amount: lending_market.borrowed_amount.clone(),
-                    unclaimed_spread_fees: lending_market.unclaimed_spread_fees.clone(),
-                    pyth_feed_id: lending_market.pyth_feed_id.clone(),
-                };
-                self.lending_market_repo
-                    .update(existing_market.id, &update_market)?
-            }
-            Err(_) => {
-                let new_market = NewLendingMarket {
-                    platform: lending_market.platform.clone(),
-                    coin_type: lending_market.coin_type.clone(),
-                    ltv: lending_market.ltv.clone(),
-                    liquidation_threshold: lending_market.liquidation_threshold.clone(),
-                    borrow_weight: lending_market.borrow_weight.clone(),
-                    liquidation_ratio: lending_market.liquidation_ratio.clone(),
-                    liquidation_penalty: lending_market.liquidation_penalty.clone(),
-                    liquidation_fee: lending_market.liquidation_fee.clone(),
-                    asset_id: lending_market.asset_id,
-                    pool_id: lending_market.pool_id.clone(),
-                    borrow_index: lending_market.borrow_index,
-                    supply_index: lending_market.supply_index,
-                    flashloan_path: lending_market.flashloan_path,
-                    ctoken_supply: lending_market.ctoken_supply,
-                    available_amount: lending_market.available_amount,
-                    borrowed_amount: lending_market.borrowed_amount,
-                    unclaimed_spread_fees: lending_market.unclaimed_spread_fees,
-                    pyth_feed_id: lending_market.pyth_feed_id,
-                };
-                self.lending_market_repo.create(&new_market)?
-            }
-        };
-
-        Ok(market)
-    }
-
-    /// Update the borrow_index and supply_index for a Navi lending market.
-    ///
-    pub async fn update_navi_market_index(
-        &self,
-        asset_id: u8,
-        borrow_index: String,
-        supply_index: String,
-    ) -> Result<models::lending_market::LendingMarket> {
-        let market = self
-            .lending_market_repo
-            .find_by_platform_and_asset_id(constant::NAVI_LENDING, asset_id as i32)?;
-
-        let market = crate::types::LendingMarket {
-            platform: market.platform,
-            coin_type: market.coin_type,
-            ltv: market.ltv,
-            liquidation_threshold: market.liquidation_threshold,
-            borrow_weight: market.borrow_weight,
-            liquidation_ratio: market.liquidation_ratio,
-            liquidation_penalty: market.liquidation_penalty,
-            liquidation_fee: market.liquidation_fee,
-            asset_id: Some(asset_id as i32),
-            pool_id: market.pool_id,
-            borrow_index: Some(borrow_index),
-            supply_index: Some(supply_index),
-            flashloan_path: market.flashloan_path,
-            ctoken_supply: market.ctoken_supply,
-            available_amount: market.available_amount,
-            borrowed_amount: market.borrowed_amount,
-            unclaimed_spread_fees: market.unclaimed_spread_fees,
-            pyth_feed_id: market.pyth_feed_id,
-        };
-
-        self.save_lending_market_to_db(market).await
     }
 
     /// Saves the Pyth price to the database.
@@ -684,23 +573,6 @@ impl LendingService {
             .map_err(|e| anyhow!("Error finding all borrowers by status {}: {}", status, e))
     }
 
-    pub fn find_market_by_platform_and_asset_id(
-        &self,
-        platform: &str,
-        asset_id: i32,
-    ) -> Result<LendingMarket> {
-        self.lending_market_repo
-            .find_by_platform_and_asset_id(platform, asset_id)
-            .map_err(|e| {
-                anyhow!(
-                    "Error finding lending market by platform {} and asset ID {}: {}",
-                    platform,
-                    asset_id,
-                    e
-                )
-            })
-    }
-
     pub fn find_distinct_user_borrows(
         &self,
     ) -> Result<Vec<models::user_borrow::UserBorrowDistinct>> {
@@ -715,23 +587,6 @@ impl LendingService {
         self.user_deposit_repo
             .find_distinct_platform_and_address()
             .map_err(|e| anyhow!("Error finding distinct user deposits: {}", e))
-    }
-
-    pub fn find_market_by_platform_and_coin_type(
-        &self,
-        platform: &str,
-        coin_type: &str,
-    ) -> Result<LendingMarket> {
-        self.lending_market_repo
-            .find_by_platform_and_coin_type(platform, coin_type)
-            .map_err(|e| {
-                anyhow!(
-                    "Error finding lending market by platform {} and coin type {}: {}",
-                    platform,
-                    coin_type,
-                    e
-                )
-            })
     }
 
     pub fn find_shared_object_by_id(

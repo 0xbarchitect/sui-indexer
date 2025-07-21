@@ -226,22 +226,6 @@ impl EventProcessor for Navi {
 
                 self.process_repay(&event).await?;
             }
-
-            constant::NAVI_STATE_UPDATED_EVENT => {
-                let event: StateUpdatedEventJson = serde_json::from_value(data)
-                    .map_err(|e| anyhow!("Failed to deserialize state updated event: {}", e))?;
-
-                let event = StateUpdatedEvent {
-                    user: event.user,
-                    asset: event.asset,
-                    user_supply_balance: event.user_supply_balance,
-                    user_borrow_balance: event.user_borrow_balance,
-                    new_supply_index: event.new_supply_index,
-                    new_borrow_index: event.new_borrow_index,
-                };
-
-                self.process_state_updated(event).await?;
-            }
             _ => return Err(anyhow!("Unsupported event type: {}", event_type)),
         }
 
@@ -281,12 +265,6 @@ impl EventProcessor for Navi {
                 self.process_repay(&event).await
             }
 
-            constant::NAVI_STATE_UPDATED_EVENT => {
-                let event: StateUpdatedEvent = bcs::from_bytes(&event.contents)
-                    .map_err(|e| anyhow!("Failed to deserialize state updated event: {}", e))?;
-
-                self.process_state_updated(event).await
-            }
             _ => return Err(anyhow!("Unsupported event type: {}", event_type)),
         }
     }
@@ -296,8 +274,7 @@ impl EventProcessor for Navi {
             constant::NAVI_DEPOSIT_EVENT
             | constant::NAVI_WITHDRAW_EVENT
             | constant::NAVI_BORROW_EVENT
-            | constant::NAVI_REPAY_EVENT
-            | constant::NAVI_STATE_UPDATED_EVENT => Ok(format!(
+            | constant::NAVI_REPAY_EVENT => Ok(format!(
                 "{}_{}_{}",
                 &self.platform,
                 &event.sender.to_string(),
@@ -512,35 +489,6 @@ impl Navi {
                 Ok(OnchainEvent::VoidEvent)
             }
         }
-    }
-
-    async fn process_state_updated(&self, event: StateUpdatedEvent) -> Result<OnchainEvent> {
-        info!("Processing Navi state updated event {:?}", event);
-
-        if let Ok(market) = self
-            .db_service
-            .update_navi_market_index(
-                event.asset,
-                event.new_borrow_index.to_string(),
-                event.new_supply_index.to_string(),
-            )
-            .await
-        {
-            return Ok(OnchainEvent::LendingIndexUpdated(
-                indexer::lending::IndexUpdatedEvent {
-                    platform: self.platform.clone(),
-                    coin_type: market.coin_type,
-                    asset_id: Some(event.asset),
-                    borrow_index: Some(event.new_borrow_index.to_string()),
-                    supply_index: Some(event.new_supply_index.to_string()),
-                },
-            ));
-        }
-
-        Err(anyhow!(
-            "Failed to update Navi market index for reserve {}",
-            event.asset,
-        ))
     }
 
     async fn create_new_borrower(&self, address: &str) -> Result<crate::types::Borrower> {
