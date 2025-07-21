@@ -1,0 +1,99 @@
+log_level = "trace | debug | info | warn | error"
+run_mode = "mainnet or testnet"
+
+arbitrage_enabled = BOOL
+liquidation_enabled = BOOL
+onchain_indexer_enabled = BOOL
+
+[database]
+database_url = "postgres://username:password@localhost/db"
+db_connection_pool_max_size = MAX_SIZE_NUMBER
+db_connection_pool_idle_size = IDLE_SIZE_NUMBER
+
+[networks]
+mainnet = { rpc_url = "https://fullnode.mainnet.sui.io:443", remote_store_url = "https://checkpoints.mainnet.sui.io" }
+testnet = { rpc_url = "https://fullnode.testnet.sui.io:443", remote_store_url = "https://checkpoints.testnet.sui.io" }
+
+[indexer]
+dev_mode = BOOL
+start_checkpoint_number = CHECKPOINT_NUMBER
+indexer_worker_count = WORKER_NUMBER
+
+[cetus]
+package_id = "0xc6faf3703b0e8ba9ed06b7851134bbbe7565eb35ff823fd78432baa4cbeaa12e"
+integration_package_id = "0x2d8c2e0fc6dd25b0214b3fa747e0fd27fd54608142cd2e4f64c1cd350cc4add4"
+global_config_id = "0xdaa46292632c3c4d8f31f23ea0f9b36a28ff3677e9684980e4438403a67a3d8f"
+partner_id = "0x639b5e433da31739e800cd085f356e64cae222966d0f1b11bd9dc76b322ff58b"
+aggregator_package_id = "0x8ae871505a80d8bf6bf9c05906cda6edfeea460c85bebe2e26a4313f5e67874a"
+aggregator_extend_package_id = "0x8093d002bba575f1378b0da206a8df1fc55c4b5b3718752304f1b67a505d2be4"
+aggregator_extend_v2_package_id = "0x5cb7499fc49c2642310e24a4ecffdbee00133f97e80e2b45bca90c64d55de880"
+
+[aftermath]
+pool_registry_id = "0xfcc774493db2c45c79f688f88d28023a3e7d98e4ee9f48bbf5c7990f651577ae"
+protocol_fee_vault_id = "0xf194d9b1bcad972e45a7dd67dd49b3ee1e3357a00a50850c52cd51bb450e13b4"
+treasury_id = "0x28e499dff5e864a2eafe476269a4f5035f1c16f338da7be18b103499abf271ce"
+insurance_fund_id = "0xf0c40d67b078000e18032334c3325c47b9ec9f3d9ae4128be820d54663d14e3b"
+referal_vault_id = "0x35d35b0e5b177593d8c3a801462485572fc30861e6ce96a55af6dc4730709278"
+pool_type = "0xd1a3eab6e9659407cb2a5a529d13b4102e498619466fc2d01cb0a6547bbdb376::af_lp::AF_LP"
+
+[bluemove]
+dex_info_id = "0x3f2d9f724f4a1ce5e71676448dc452be9a6243dac9c5b975a588c8c867066e92"
+
+[obric]
+pyth_state_object_id = "0x1f9310238ee9298fb703c3419030b35b22bb1cc37113e3bb5007c99aec79e5b8"
+
+[bluefin]
+global_config_id = "0x03db251ba509a8d5d8777b6338836082335d93eecbdd09a11e190a1cff51c352"
+
+[flowx]
+pool_registry_id = "0x27565d24a4cd51127ac90e4074a841bbe356cca7bf5759ddc14a975be1632abc"
+versioned_id = "0x67624a1533b5aff5d0dfcf5e598684350efd38134d2d245f475524c03a64e656"
+
+[turbos]
+versioned_id = "0xf1cf0e81048df168ebeb1b8030fad24b3e0b53ae827c25053fff0779c1445b6f"
+
+[momentum]
+package_id = "0xc84b1ef2ac2ba5c3018e2b8c956ba5d0391e0e46d1daa1926d5a99a6a42526b4"
+versioned_id = "0x2375a0b1ec12010aaea3b2545acfa2ad34cfbba03ce4b59f4c39e1e25eed1b2a"
+low_limit_price = "4295048017"
+high_limit_price = "79226673515401279992447579050"
+
+[navi]
+navi_coins_file = "navi_coins"
+api_endpoint = "https://open-api.naviprotocol.io/api"
+package_id = "0x81c408448d0d57b3e371ea94de1d40bf852784d3e225de1e74acab3e8395c18f"
+storage_id = "0xbb4e2f4b6205c2e2a2db47aeb4f830796ec7c005f88537ee775986639bc442fe"
+incentive_v2_id = "0xf87a8acb8b81d14307894d12595541a73f19933f88e1326d5be349c7a6f7559c"
+incentive_v3_id = "0x62982dad27fb10bb314b3384d5de8d2ac2d72ab2dbeae5d801dbdb9efa816c80"
+price_oracle_id = "0x1568865ed9a0b5ec414220e8f79b3d04c77acc82358f6e5ae4635687392ffbef"
+oracle_config_id = "0x1afe1cb83634f581606cc73c4487ddd8cc39a944b951283af23f7d69d5589478"
+supra_oracle_holder_id = "0xaa0315f0748c1f24ddb2b45f7939cff40f7a8104af5ccbc4a1d32f870c0b4105"
+oracle_package_id = "0xc2d49bf5e75d2258ee5563efa527feb6155de7ac6f6bf025a23ee88cd12d5a83"
+
+[suilend]
+package_id = "0x21f544aff826a48e6bd5364498454d8487c4a90f84995604cd5c947c06b596c3"
+lending_market_id = "0x84030d26d85eaa7035084a057f2f11f701b7e2e4eda87551becbc7c97505ece1"
+lending_market_object_type = "0xf95b06141ed4a174f239417323bde3f209b972f5930d8521ea38a52aff3a6ddf::suilend::MAIN_POOL"
+obligation_owner_cap_object_type = "0xf95b06141ed4a174f239417323bde3f209b972f5930d8521ea38a52aff3a6ddf::lending_market::ObligationOwnerCap"
+
+[scallop]
+api_endpoint = "https://sdk.api.scallop.io/api"
+package_id = "0x83bbe0b3985c5e3857803e2678899b03f3c4a31be75006ab03faf268c014ce41"
+versioned_id = "0x07871c4b3c847a0f674510d4978d5cf6f960452795e8ff6f189fd2088a3f6ac7"
+market_id = "0xa757975255146dc9686aa823b7838b507f315d704f428cbadad2f4ea061939d9"
+coin_decimals_registry_id = "0x200abe9bf19751cc566ae35aa58e2b7e4ff688fc1130f8d8909ea09bc137d668"
+obligation_key_object_type = "0xefe8b36d5b2e43728cc323298626b83177803521d195cfb11e15b910e892fddf::obligation::ObligationKey"
+xoracle_package_id = "0x897ebc619bdb4c3d9e8d86fb85b86cfd5d861b1696d26175c55ed14903a372f6"
+xoracle_object_id = "0x93d5bf0936b71eb27255941e532fac33b5a5c7759e377b4923af0a1359ad494f"
+xoracle_pyth_package_id = "0x1cf913c825c202cbbb71c378edccb9c04723fa07a73b88677b2ef89c6e203a85"
+xoracle_pyth_state_id = "0x1f9310238ee9298fb703c3419030b35b22bb1cc37113e3bb5007c99aec79e5b8"
+xoracle_pyth_registry_id = "0x352c9600e69ff6469f9fc7cd1d0cd5f88264caa5f8908102a223ce663fbb360c"
+
+[pyth]
+ws_url = "wss://hermes.pyth.network/ws"
+api_url = "https://hermes.pyth.network/api"
+package_id = "0x04e20ddf36af412a4096f9014f4a565af9e812db9a05cc40254846cf6ed0ad91"
+wormhole_package_id = "0x5306f64e312b581766351c07af79c72fcb1cd25147157fdc2f8ad76de9a3fb6a"
+wormhole_state_id = "0xaeab97f96cf9877fee2883315d459552b2b921edc16d7ceac6eab944dd88919c"
+pyth_state_id = "0x1f9310238ee9298fb703c3419030b35b22bb1cc37113e3bb5007c99aec79e5b8"
+price_identifier_type_tag = "0x8d97f1cd6ac663735be08d1d2b6d02a159e711586461306ce60a2b7a6a565a9e::price_identifier::PriceIdentifier"

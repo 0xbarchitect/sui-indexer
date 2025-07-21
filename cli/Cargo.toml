@@ -1,0 +1,18 @@
+[package]
+name = "cli"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mev_lib = { path = "../mev-lib" }
+db = { path = "../db" }
+sui_sdk = { git = "https://github.com/mystenlabs/sui", package = "sui-sdk"}
+tokio = { version = "1.2", features = ["full"] }
+anyhow = "1.0"
+clap = { version = "4.5.32", features = ["derive"] }
+dotenv = "0.15.0"
+hex = "0.4.3"
+base64 = "0.22.1"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+rust_decimal = "1.37.2"

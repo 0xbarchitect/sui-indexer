@@ -1,0 +1,4 @@
+[workspace]
+
+members = ["cli", "db", "mev-lib", "server"]
+resolver = "2"
