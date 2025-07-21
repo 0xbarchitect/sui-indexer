@@ -2,10 +2,10 @@
 
 Commands to execute logics in isolated context.
 
-## Tx details
+## Process tx events
 
 ```sh
-$ cargo run -p cli -- index tx-details --digest=TX_DIGEST
+$ cargo run -p cli -- index tx-process --digest=TX_DIGEST
 ```
 
 ## Checkpoint details
