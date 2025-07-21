@@ -5,45 +5,19 @@ arbitrage_enabled = BOOL
 liquidation_enabled = BOOL
 onchain_indexer_enabled = BOOL
 
-
 [database]
 database_url = "postgres://username:password@localhost/db"
 db_connection_pool_max_size = MAX_SIZE_NUMBER
 db_connection_pool_idle_size = IDLE_SIZE_NUMBER
 
-
 [networks]
-mainnet = { rpc_url = "https://sui-mainnet-ca-1.cosmostation.io", remote_store_url = "https://checkpoints.mainnet.sui.io" }
+mainnet = { rpc_url = "https://fullnode.mainnet.sui.io:443", remote_store_url = "https://checkpoints.mainnet.sui.io" }
 testnet = { rpc_url = "https://fullnode.testnet.sui.io:443", remote_store_url = "https://checkpoints.testnet.sui.io" }
-
 
 [indexer]
 dev_mode = BOOL
 start_checkpoint_number = CHECKPOINT_NUMBER
 indexer_worker_count = WORKER_NUMBER
-
-
-[arbitrage]
-arb_input_coin_type = "COIN_TYPE"
-arb_input_amount = AMOUNT_F64
-max_path_length = MAX_LENGTH
-max_arb_path_count = MAX_NUMBER
-coin_usd_liquidity_threshold = NUMBER
-max_dfs_adjacency_list_size = MAX_SIZE
-slippage_tolerance = SLIPPAGE_F64
-reserve_pool_tolerance = RESERVE_POOL_F64
-indexer_lagging_ms_threshold = THRESHOLD_NUMBER
-
-[liquidation]
-borrower_debt_usd_threshold = NUMBER
-borrower_map_size = NUMBER
-hf_threshold_upper = THRESHOLD_F64
-hf_threshold_lower = THRESHOLD_F64
-gas_price = NUMBER
-gas_price_factor = FACTOR_F64
-flashloan_threshold_usd = THRESHOLD_F64
-flashloan_coin = "0xdba34672e30cb065b1f93e3ab55318768fd6fef66c15942c9f7cb846e2f900e7::usdc::USDC"
-flashloan_pool = { exchange = "cetus", pool_id = "0xb8a67c149fd1bc7f9aca1541c61e51ba13bdded64c273c278e50850ae3bff073" }
 
 [cetus]
 package_id = "0xc6faf3703b0e8ba9ed06b7851134bbbe7565eb35ff823fd78432baa4cbeaa12e"
@@ -53,8 +27,6 @@ partner_id = "0x639b5e433da31739e800cd085f356e64cae222966d0f1b11bd9dc76b322ff58b
 aggregator_package_id = "0x8ae871505a80d8bf6bf9c05906cda6edfeea460c85bebe2e26a4313f5e67874a"
 aggregator_extend_package_id = "0x8093d002bba575f1378b0da206a8df1fc55c4b5b3718752304f1b67a505d2be4"
 aggregator_extend_v2_package_id = "0x5cb7499fc49c2642310e24a4ecffdbee00133f97e80e2b45bca90c64d55de880"
-usdc_sui_pool_id = "0xb8d7d9e66a60c239e7a60110efcf8de6c705580ed924d0dde141f4a0e2c90105"
-flash_loan_fee_rate = 0.0025
 
 [aftermath]
 pool_registry_id = "0xfcc774493db2c45c79f688f88d28023a3e7d98e4ee9f48bbf5c7990f651577ae"

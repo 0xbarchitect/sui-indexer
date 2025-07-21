@@ -34,8 +34,6 @@ pub struct CetusConfig {
     pub aggregator_package_id: String,
     pub aggregator_extend_package_id: String,
     pub aggregator_extend_v2_package_id: String,
-    pub usdc_sui_pool_id: String,
-    pub flash_loan_fee_rate: f64,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
