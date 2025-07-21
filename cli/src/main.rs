@@ -179,16 +179,15 @@ async fn main() -> Result<()> {
 
                 index_cmd::handle_query_events(Arc::clone(&sui_client), &digest).await?;
             }
-            IndexCommands::TxDetails { digest } => {
-                info!("Querying transaction details: {}", digest);
+            IndexCommands::TxProcess { digest } => {
+                info!("Process tx events: {}", digest);
 
-                index_cmd::handle_query_tx(Arc::clone(&onchain_indexer), &digest).await?;
+                index_cmd::handle_process_tx(Arc::clone(&onchain_indexer), &digest).await?;
             }
-            IndexCommands::CheckpointDetails { checkpoint_number } => {
-                info!("Querying checkpoint details: {}", checkpoint_number);
+            IndexCommands::CheckpointDetails { checkpoint } => {
+                info!("Querying checkpoint details: {}", checkpoint);
 
-                index_cmd::handle_query_checkpoint(Arc::clone(&sui_client), checkpoint_number)
-                    .await?;
+                index_cmd::handle_query_checkpoint(Arc::clone(&sui_client), checkpoint).await?;
             }
         },
     }

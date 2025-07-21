@@ -130,39 +130,9 @@ pub struct PythConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ArbitrageConfig {
-    pub input_coin_type: String,
-    pub input_amount: f64,
-    pub max_path_length: usize,
-    pub max_path_count: usize,
-
-    pub coin_usd_liquidity_threshold: f64,
-    pub max_dfs_adjacency_list_size: usize,
-    pub slippage_tolerance: f64,
-    pub reserve_pool_tolerance: f64,
-    pub indexer_lagging_ms_threshold: u64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct LiquidationConfig {
-    pub borrower_debt_usd_threshold: f64,
-    pub borrower_map_size: usize,
-    pub hf_threshold_upper: f64,
-    pub hf_threshold_lower: f64,
-    pub gas_price: u64,
-    pub gas_price_factor: f64,
-    pub flashloan_threshold_usd: f64,
-    pub flashloan_coin: String,
-    pub flashloan_pool: FlashloanPool,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct IndexerConfig {
     pub dev_mode: bool,
     pub start_checkpoint_number: u64,
-    pub local_checkpoint_dir: String,
-    pub indexer_progress_filepath: String,
-    pub use_remote_store: bool,
     pub indexer_worker_count: usize,
 }
 
@@ -191,10 +161,7 @@ pub struct Config {
 
     pub database: DatabaseConfig,
     pub networks: HashMap<String, NetworkConfig>,
-
     pub indexer: IndexerConfig,
-    pub arbitrage: ArbitrageConfig,
-    pub liquidation: LiquidationConfig,
 
     // dexes
     pub cetus: CetusConfig,

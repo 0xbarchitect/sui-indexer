@@ -25,8 +25,8 @@ pub enum IndexCommands {
         digest: String,
     },
 
-    #[command(about = "Get transaction details response")]
-    TxDetails {
+    #[command(about = "Process tx events")]
+    TxProcess {
         #[arg(long)]
         digest: String,
     },
@@ -34,7 +34,7 @@ pub enum IndexCommands {
     #[command(about = "Get checkpoint details")]
     CheckpointDetails {
         #[arg(long)]
-        checkpoint_number: u64,
+        checkpoint: u64,
     },
 }
 
@@ -57,12 +57,12 @@ pub async fn handle_query_events(client: Arc<SuiClient>, digest: &str) -> Result
     Ok(())
 }
 
-pub async fn handle_query_tx(onchain_indexer: Arc<OnchainIndexer>, digest: &str) -> Result<()> {
+pub async fn handle_process_tx(onchain_indexer: Arc<OnchainIndexer>, digest: &str) -> Result<()> {
     onchain_indexer.process_tx_events(digest).await
 }
 
-pub async fn handle_query_checkpoint(client: Arc<SuiClient>, checkpoint_number: u64) -> Result<()> {
-    let checkpoint_seq_num: CheckpointSequenceNumber = checkpoint_number;
+pub async fn handle_query_checkpoint(client: Arc<SuiClient>, checkpoint: u64) -> Result<()> {
+    let checkpoint_seq_num: CheckpointSequenceNumber = checkpoint;
     let checkpoint_id = CheckpointId::from(checkpoint_seq_num);
 
     let checkpoint = client.read_api().get_checkpoint(checkpoint_id).await?;

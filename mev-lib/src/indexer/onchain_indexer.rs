@@ -205,25 +205,6 @@ impl Worker for OnchainIndexer {
             lagging_timestamp_ms,
         );
 
-        // send alert message if lagging exceeds the threshold
-        if lagging_timestamp_ms > self.config.arbitrage.indexer_lagging_ms_threshold {
-            let current_timestamp = utils::get_current_timestamp_secs();
-            let next_alert_timestamp = self.next_alert_timestamp.load(Ordering::SeqCst);
-
-            if current_timestamp > next_alert_timestamp {
-                let alert_backoff_factor = self.alert_backoff_factor.fetch_add(1, Ordering::SeqCst);
-                let capped_factor = alert_backoff_factor.min(8);
-
-                self.next_alert_timestamp.store(
-                    current_timestamp + (1 << capped_factor) * 900,
-                    Ordering::SeqCst,
-                );
-            }
-        } else {
-            // reset the alert backoff factor if lagging is within the threshold
-            self.alert_backoff_factor.store(0, Ordering::SeqCst);
-        }
-
         // save the metrics to the database for each 1K checkpoints
         if seq_number % 1_000 == 0 {
             let avg_processing_time = if self.total_processed_checkpoints.load(Ordering::SeqCst) > 0

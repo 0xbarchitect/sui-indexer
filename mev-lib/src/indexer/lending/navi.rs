@@ -296,47 +296,32 @@ impl Navi {
         {
             Ok(borrower) => {
                 // if borrower exists and has been fully initialized, update user_deposit
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            event.sender.to_string(),
-                            None,
-                            None,
-                            Some(event.reserve),
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingDeposit(
-                        indexer::lending::DepositEvent {
-                            platform: self.platform.clone(),
-                            borrower: event.sender.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: Some(event.reserve),
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    // Borrower is recorded but not initialized yet, simply ignore it.
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        event.sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user deposit", event.sender);
             }
             Err(e) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(&event.sender.to_string()).await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(event.sender.to_string(), None, None, Some(event.reserve))
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingDeposit(
+            indexer::lending::DepositEvent {
+                platform: self.platform.clone(),
+                borrower: event.sender.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: Some(event.reserve),
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_withdraw(&self, event: &WithdrawEvent) -> Result<OnchainEvent> {
@@ -348,47 +333,32 @@ impl Navi {
         {
             Ok(borrower) => {
                 // if borrower exists and has been fully initialized, update user_deposit
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            event.sender.to_string(),
-                            None,
-                            None,
-                            Some(event.reserve),
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingWithdraw(
-                        indexer::lending::WithdrawEvent {
-                            platform: self.platform.clone(),
-                            borrower: event.sender.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: Some(event.reserve),
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    // Borrower is recorded but not initialized yet, simply ignore it.
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        event.sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user deposit", event.sender);
             }
             Err(e) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(&event.sender.to_string()).await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(event.sender.to_string(), None, None, Some(event.reserve))
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingWithdraw(
+            indexer::lending::WithdrawEvent {
+                platform: self.platform.clone(),
+                borrower: event.sender.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: Some(event.reserve),
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_borrow(&self, event: &BorrowEvent) -> Result<OnchainEvent> {
@@ -400,45 +370,30 @@ impl Navi {
         {
             Ok(borrower) => {
                 // if borrower exists and has been fully initialized, update user_deposit
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            event.sender.to_string(),
-                            None,
-                            None,
-                            Some(event.reserve),
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
-                        platform: self.platform.clone(),
-                        borrower: event.sender.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: Some(event.reserve),
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    // Borrower is recorded but not initialized yet, simply ignore it.
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        event.sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user borrow", event.sender);
             }
             Err(e) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(&event.sender.to_string()).await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(event.sender.to_string(), None, None, Some(event.reserve))
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
+            platform: self.platform.clone(),
+            borrower: event.sender.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: Some(event.reserve),
+            amount: user_borrow.amount,
+        }))
     }
 
     async fn process_repay(&self, event: &RepayEvent) -> Result<OnchainEvent> {
@@ -450,45 +405,30 @@ impl Navi {
         {
             Ok(borrower) => {
                 // if borrower exists and has been fully initialized, update user_deposit
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            event.sender.to_string(),
-                            None,
-                            None,
-                            Some(event.reserve),
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
-                        platform: self.platform.clone(),
-                        borrower: event.sender.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: Some(event.reserve),
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    // Borrower is recorded but not initialized yet, simply ignore it.
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        event.sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user repay", event.sender);
             }
             Err(e) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(&event.sender.to_string()).await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(event.sender.to_string(), None, None, Some(event.reserve))
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
+            platform: self.platform.clone(),
+            borrower: event.sender.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: Some(event.reserve),
+            amount: user_borrow.amount,
+        }))
     }
 
     async fn create_new_borrower(&self, address: &str) -> Result<crate::types::Borrower> {

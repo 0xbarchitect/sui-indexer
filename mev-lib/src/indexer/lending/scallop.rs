@@ -311,47 +311,38 @@ impl Scallop {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            event.provider.to_string(),
-                            Some(event.obligation.to_string()),
-                            Some(event.deposit_asset.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingDeposit(
-                        indexer::lending::DepositEvent {
-                            platform: self.platform.clone(),
-                            borrower: event.provider.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: None,
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user deposit", event.provider);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(
+                event.provider.to_string(),
+                Some(event.obligation.to_string()),
+                Some(event.deposit_asset.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingDeposit(
+            indexer::lending::DepositEvent {
+                platform: self.platform.clone(),
+                borrower: event.provider.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: None,
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_withdraw(&self, event: &WithdrawEvent, sender: &str) -> Result<OnchainEvent> {
@@ -363,47 +354,38 @@ impl Scallop {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            event.taker.to_string(),
-                            Some(event.obligation.to_string()),
-                            Some(event.withdraw_asset.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingWithdraw(
-                        indexer::lending::WithdrawEvent {
-                            platform: self.platform.clone(),
-                            borrower: event.taker.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: None,
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping withdraw event",
-                        sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user withdraw", event.taker);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(
+                event.taker.to_string(),
+                Some(event.obligation.to_string()),
+                Some(event.withdraw_asset.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingWithdraw(
+            indexer::lending::WithdrawEvent {
+                platform: self.platform.clone(),
+                borrower: event.taker.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: None,
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_borrow(&self, event: &BorrowEventV3, sender: &str) -> Result<OnchainEvent> {
@@ -415,45 +397,36 @@ impl Scallop {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            event.borrower.to_string(),
-                            Some(event.obligation.to_string()),
-                            Some(event.asset.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
-                        platform: self.platform.clone(),
-                        borrower: event.borrower.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: None,
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping borrow event",
-                        sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user borrow", event.borrower);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(
+                event.borrower.to_string(),
+                Some(event.obligation.to_string()),
+                Some(event.asset.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
+            platform: self.platform.clone(),
+            borrower: event.borrower.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: None,
+            amount: user_borrow.amount,
+        }))
     }
 
     async fn process_repay(&self, event: &RepayEvent, sender: &str) -> Result<OnchainEvent> {
@@ -465,45 +438,36 @@ impl Scallop {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            event.repayer.to_string(),
-                            Some(event.obligation.to_string()),
-                            Some(event.asset.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
-                        platform: self.platform.clone(),
-                        borrower: event.repayer.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: None,
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping repay event",
-                        sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user repay", event.repayer);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(
+                event.repayer.to_string(),
+                Some(event.obligation.to_string()),
+                Some(event.asset.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
+            platform: self.platform.clone(),
+            borrower: event.repayer.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: None,
+            amount: user_borrow.amount,
+        }))
     }
 
     // helper functions

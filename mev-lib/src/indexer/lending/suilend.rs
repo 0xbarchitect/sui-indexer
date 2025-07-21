@@ -299,47 +299,38 @@ impl SuiLend {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            sender.to_string(),
-                            Some(event.obligation_id.to_string()),
-                            Some(event.coin_type.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingDeposit(
-                        indexer::lending::DepositEvent {
-                            platform: self.platform.clone(),
-                            borrower: sender.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: None,
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping deposit event",
-                        sender
-                    );
-
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user deposit", sender);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation_id.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(
+                sender.to_string(),
+                Some(event.obligation_id.to_string()),
+                Some(event.coin_type.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingDeposit(
+            indexer::lending::DepositEvent {
+                platform: self.platform.clone(),
+                borrower: sender.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: None,
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_withdraw(&self, event: &WithdrawEvent, sender: &str) -> Result<OnchainEvent> {
@@ -351,46 +342,38 @@ impl SuiLend {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_deposit = self
-                        .service
-                        .fetch_user_deposit(
-                            sender.to_string(),
-                            Some(event.obligation_id.to_string()),
-                            Some(event.coin_type.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_deposit_to_db(user_deposit.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingWithdraw(
-                        indexer::lending::WithdrawEvent {
-                            platform: self.platform.clone(),
-                            borrower: sender.to_string(),
-                            coin_type: user_deposit.coin_type,
-                            asset_id: None,
-                            amount: user_deposit.amount,
-                        },
-                    ))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping withdraw event",
-                        sender
-                    );
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user withdraw", sender);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation_id.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_deposit = self
+            .service
+            .fetch_user_deposit(
+                sender.to_string(),
+                Some(event.obligation_id.to_string()),
+                Some(event.coin_type.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_deposit_to_db(user_deposit.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingWithdraw(
+            indexer::lending::WithdrawEvent {
+                platform: self.platform.clone(),
+                borrower: sender.to_string(),
+                coin_type: user_deposit.coin_type,
+                asset_id: None,
+                amount: user_deposit.amount,
+            },
+        ))
     }
 
     async fn process_borrow(&self, event: &BorrowEvent, sender: &str) -> Result<OnchainEvent> {
@@ -402,44 +385,36 @@ impl SuiLend {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            sender.to_string(),
-                            Some(event.obligation_id.to_string()),
-                            Some(event.coin_type.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
-                        platform: self.platform.clone(),
-                        borrower: sender.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: None,
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping borrow event",
-                        sender
-                    );
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user borrow", sender);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation_id.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(
+                sender.to_string(),
+                Some(event.obligation_id.to_string()),
+                Some(event.coin_type.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingBorrow(indexer::lending::BorrowEvent {
+            platform: self.platform.clone(),
+            borrower: sender.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: None,
+            amount: user_borrow.amount,
+        }))
     }
 
     async fn process_repay(&self, event: &RepayEvent, sender: &str) -> Result<OnchainEvent> {
@@ -451,44 +426,36 @@ impl SuiLend {
             .find_borrower_by_platform_and_address(&self.platform, sender)
         {
             Ok(borrower) => {
-                if borrower.status == constant::READY_STATUS {
-                    let user_borrow = self
-                        .service
-                        .fetch_user_borrow(
-                            sender.to_string(),
-                            Some(event.obligation_id.to_string()),
-                            Some(event.coin_type.name.clone()),
-                            None,
-                        )
-                        .await?;
-
-                    self.db_service
-                        .save_user_borrow_to_db(user_borrow.clone())
-                        .await?;
-
-                    Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
-                        platform: self.platform.clone(),
-                        borrower: sender.to_string(),
-                        coin_type: user_borrow.coin_type,
-                        asset_id: None,
-                        amount: user_borrow.amount,
-                    }))
-                } else {
-                    info!(
-                        "Borrower {} is not fully initialized, skipping repay event",
-                        sender
-                    );
-                    Ok(OnchainEvent::VoidEvent)
-                }
+                info!("Borrower {} exists, updating user repay", sender);
             }
             Err(_) => {
                 // If borrower does not exist, create a new borrower entry
                 self.create_new_borrower(sender.to_string(), event.obligation_id.to_string())
                     .await?;
-
-                Ok(OnchainEvent::VoidEvent)
             }
         }
+
+        let user_borrow = self
+            .service
+            .fetch_user_borrow(
+                sender.to_string(),
+                Some(event.obligation_id.to_string()),
+                Some(event.coin_type.name.clone()),
+                None,
+            )
+            .await?;
+
+        self.db_service
+            .save_user_borrow_to_db(user_borrow.clone())
+            .await?;
+
+        Ok(OnchainEvent::LendingRepay(indexer::lending::RepayEvent {
+            platform: self.platform.clone(),
+            borrower: sender.to_string(),
+            coin_type: user_borrow.coin_type,
+            asset_id: None,
+            amount: user_borrow.amount,
+        }))
     }
 
     // helper functions
