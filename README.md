@@ -1,6 +1,24 @@
 # SUI indexer
 
 The indexer for SUI onchain data. It listens to tx events in checkpoint, parse to structured data. The decoded data is saved to PostgreSQL for further processing. This data can be used to build analytics applications or trading bot.
+Currently supports indexing data for protocols:
+
+- [DEX] Cetus
+- [DEX] Bluefin
+- [DEX] Aftermath
+- [DEX] Momentum
+- [DEX] Turbos
+- [DEX] FlowX
+- [DEX] Bluemove
+- [DEX] Obric
+- [Lending] Navi
+- [Lending] Suilend
+- [Lending] Scallop
+- [Oracle] Pyth
+
+## Architecture
+
+![system architecture](./docs/architecture.png)
 
 ## Prerequisites
 
