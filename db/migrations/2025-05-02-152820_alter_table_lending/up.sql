@@ -1,0 +1,8 @@
+-- Your SQL goes here
+
+ALTER TABLE user_deposits
+    ADD COLUMN IF NOT EXISTS obligation_id VARCHAR(256) DEFAULT NULL;
+
+ALTER TABLE user_borrows
+    ADD COLUMN IF NOT EXISTS obligation_id VARCHAR(256) DEFAULT NULL,
+    ADD COLUMN IF NOT EXISTS borrow_index VARCHAR(256) DEFAULT NULL;

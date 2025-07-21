@@ -1,0 +1,43 @@
+[package]
+name = "mev_lib"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+db = { path = "../db" }
+
+sui_sdk = { git = "https://github.com/mystenlabs/sui", package = "sui-sdk" }
+sui-types = { git = "https://github.com/mystenlabs/sui", package = "sui-types" }
+shared-crypto = { git = "https://github.com/mystenlabs/sui", package = "shared-crypto" }
+sui-json-rpc_types = { git = "https://github.com/mystenlabs/sui", package = "sui-json-rpc-types" }
+fastcrypto = { git = "https://github.com/MystenLabs/fastcrypto", rev = "69d496c71fb37e3d22fe85e5bbfd4256d61422b9" }
+tokio = { version = "1.44", features = ["full"] }
+anyhow = "1.0"
+dotenv = "0.15.0"
+async-trait = "0.1.68"
+base64 = "0.22.1"
+bcs = "0.1.6"
+toml = "0.8.20"
+serde = "1.0.219"
+regex = "1.11.1"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+serde_json = "1.0.140"
+futures = "0.3.31"
+chrono = { version = "0.4.40", features = ["serde"] }
+rust_decimal = { version = "1.37.1", features = ["maths"] }
+serde_with = "3.12.0"
+rayon = "1.10.0"
+reqwest = { version = "0.12.20", features = ["json"] }
+indexed_priority_queue = "0.3.0"
+twox-hash = "2.1.1"
+rand = "0.8.5"
+sui_data_ingestion_core = { git = "https://github.com/mystenlabs/sui", package = "sui-data-ingestion-core" }
+tokio-tungstenite = { version = "0.26.2", features = ["native-tls"] }
+futures-util = "0.3.31"
+url = "2.5.4"
+prometheus = "0.13.4"
+env = "1.0.1"
+teloxide = { version = "0.17.0", features = ["macros"] }
+sysinfo = { version = "0.36.0" }
+bigdecimal = "0.4.8"

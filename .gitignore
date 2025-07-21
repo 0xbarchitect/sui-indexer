@@ -1,0 +1,24 @@
+/target
+
+.env*
+!.env.example
+
+config.toml*
+!config.toml.example
+
+logs
+
+# ansible files
+inventory.ini
+secrets.yml
+
+# bot files
+bot_wallets.toml*
+
+# supervisord files
+supervisord.pid
+
+# temp files
+shio.json
+hermes.json
+borrowers.toml*

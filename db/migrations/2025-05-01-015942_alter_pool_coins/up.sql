@@ -1,0 +1,16 @@
+-- Your SQL goes here
+
+ALTER TABLE pools
+    DROP COLUMN IF EXISTS coin_a,
+    DROP COLUMN IF EXISTS coin_b,
+    DROP COLUMN IF EXISTS coin_a_amount,
+    DROP COLUMN IF EXISTS coin_b_amount;
+
+DELETE FROM pools;
+
+ALTER TABLE pools
+    ADD COLUMN IF NOT EXISTS coins TEXT NOT NULL,
+    ADD COLUMN IF NOT EXISTS coin_amounts VARCHAR(256),
+    ADD COLUMN IF NOT EXISTS weights VARCHAR(256),
+    ADD COLUMN IF NOT EXISTS fees_swap_in VARCHAR(256),
+    ADD COLUMN IF NOT EXISTS fees_swap_out VARCHAR(256);

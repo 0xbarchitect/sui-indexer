@@ -1,0 +1,19 @@
+[package]
+name = "server"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mev_lib = { path = "../mev-lib" }
+db = { path = "../db" }
+
+sui_sdk = { git = "https://github.com/mystenlabs/sui", package = "sui-sdk" }
+sui_types = { git = "https://github.com/mystenlabs/sui", package = "sui-types" }
+bcs = "0.1.6"
+tokio = { version = "1.2", features = ["full"] }
+anyhow = "1.0"
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+sui_data_ingestion_core = { git = "https://github.com/mystenlabs/sui", package = "sui-data-ingestion-core" }
+async-trait = "0.1.68"
+futures = "0.3.31"

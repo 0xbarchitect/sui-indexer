@@ -1,0 +1,47 @@
+{
+    "editor.formatOnSave": true,
+    "editor.tabSize": 4,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+    // Rust settings
+    "rust-analyzer.check.command": "clippy",
+    "rust-analyzer.checkOnSave": true,
+    "rust-analyzer.inlayHints.enable": true,
+    "rust-analyzer.inlayHints.chainingHints.enable": true,
+    "rust-analyzer.inlayHints.typeHints.enable": true,
+    "rust-analyzer.cargo.allFeatures": true,
+    "rust-analyzer.procMacro.enable": true,
+    "rust-analyzer.diagnostics.disabled": [
+        "unresolved-proc-macro"
+    ],
+    // Rust formatter settings
+    "[rust]": {
+        "editor.defaultFormatter": "rust-lang.rust-analyzer",
+        "editor.formatOnSave": true
+    },
+    // Move settings
+    "move-analyzer.server.path": "move-analyzer",
+    "move-analyzer.trace.server": "verbose",
+    "move-analyzer.inlayHints.enable": true,
+    // Move formatter settings
+    "[move]": {
+        "editor.defaultFormatter": "move.move-analyzer",
+        //"editor.formatOnSave": true
+    },
+    // Terminal settings for integrated terminal
+    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.defaultProfile.osx": "zsh",
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    // File associations
+    "files.associations": {
+        "*.move": "move",
+        "Cargo.toml": "toml",
+        "Move.toml": "toml"
+    },
+    // Telemetry settings
+    "telemetry.telemetryLevel": "off",
+    // Display settings
+    "workbench.colorTheme": "Default Dark+",
+    //"editor.fontFamily": "'JetBrains Mono', 'Fira Code', Consolas, 'Courier New', monospace",
+    //"editor.fontLigatures": true
+}
