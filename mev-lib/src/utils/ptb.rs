@@ -41,7 +41,6 @@ use tracing::{debug, error, info, trace, warn, Level};
 
 pub struct PTBHelper {
     pub client: Arc<SuiClient>,
-    pub shio_client: Arc<SuiClient>,
     pub db_pool_service: Arc<db_service::pool::PoolService>,
     pub db_lending_service: Arc<db_service::lending::LendingService>,
 }
@@ -49,13 +48,11 @@ pub struct PTBHelper {
 impl PTBHelper {
     pub fn new(
         client: Arc<SuiClient>,
-        shio_client: Arc<SuiClient>,
         db_pool_service: Arc<db_service::pool::PoolService>,
         db_lending_service: Arc<db_service::lending::LendingService>,
     ) -> Self {
         PTBHelper {
             client,
-            shio_client,
             db_pool_service,
             db_lending_service,
         }
@@ -571,13 +568,8 @@ impl PTBHelper {
         let signature = sender.sign(&digest);
 
         // submit tx
-        let client = if use_shio_endpoint {
-            self.shio_client.clone()
-        } else {
-            self.client.clone()
-        };
-
-        let tx_response = client
+        let tx_response = self
+            .client
             .quorum_driver_api()
             .execute_transaction_block(
                 transaction::Transaction::from_generic_sig_data(

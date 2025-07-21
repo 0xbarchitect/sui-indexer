@@ -138,14 +138,6 @@ pub struct PythConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ShioConfig {
-    pub rpc_url: String,
-    pub ws_url: String,
-    pub package_id: String,
-    pub global_object_ids: Vec<String>,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct ArbitrageConfig {
     pub input_coin_type: String,
     pub input_amount: f64,
@@ -173,20 +165,6 @@ pub struct LiquidationConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct ExecutorConfig {
-    pub operator_key: String,
-    pub bots_file: String,
-    pub bot_balance_threshold: f64,
-    pub bot_balance_remaining_dust: f64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct MasterDataConfig {
-    pub coins_file: String,
-    pub lending_markets_file: String,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct IndexerConfig {
     pub dev_mode: bool,
     pub start_checkpoint_number: u64,
@@ -204,12 +182,6 @@ pub struct DatabaseConfig {
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
-pub struct TelegramConfig {
-    pub bot_token: String,
-    pub me_chat_id: u64,
-}
-
-#[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct Config {
     // global
     pub log_level: String,
@@ -217,24 +189,12 @@ pub struct Config {
 
     pub arbitrage_enabled: bool,
     pub liquidation_enabled: bool,
-
     pub onchain_indexer_enabled: bool,
-    pub alpha_finder_enabled: bool,
-    pub execution_enabled: bool,
-
-    pub use_mev_db: bool,
-    pub use_hermes: bool,
-    pub use_shio: bool,
-    pub use_shio_endpoint: bool,
-
-    pub master_data: MasterDataConfig,
 
     pub database: DatabaseConfig,
     pub networks: HashMap<String, NetworkConfig>,
 
     pub indexer: IndexerConfig,
-    pub executor: ExecutorConfig,
-
     pub arbitrage: ArbitrageConfig,
     pub liquidation: LiquidationConfig,
 
@@ -255,10 +215,6 @@ pub struct Config {
 
     // oracles
     pub pyth: PythConfig,
-
-    // 3rd party services
-    pub shio: ShioConfig,
-    pub telegram: TelegramConfig,
 }
 
 impl Config {

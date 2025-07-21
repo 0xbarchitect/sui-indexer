@@ -105,24 +105,11 @@ async fn main() -> Result<()> {
         Arc::new(SharedObjectRepositoryImpl::new(db_conn.clone()));
 
     // initialize sui client
-    let sender = Arc::new(utils::load_keypair_from_priv_key(
-        &config.executor.operator_key,
-    )?);
     let network_config = config.networks.get(&config.run_mode).unwrap();
     let rpc_url = network_config.rpc_url.as_deref().unwrap();
 
     let sui_client = Arc::new(SuiClientBuilder::default().build(rpc_url).await?);
     warn!("Sui client initialized with RPC URL: {}", rpc_url);
-
-    let shio_client = Arc::new(
-        SuiClientBuilder::default()
-            .build(&config.shio.rpc_url)
-            .await?,
-    );
-    warn!(
-        "Shio client initialized with RPC URL: {}",
-        config.shio.rpc_url
-    );
 
     // services
     let db_pool_service = Arc::new(PoolService::new(
@@ -147,7 +134,6 @@ async fn main() -> Result<()> {
 
     let ptb_helper = Arc::new(PTBHelper::new(
         Arc::clone(&sui_client),
-        Arc::clone(&shio_client),
         Arc::clone(&db_pool_service),
         Arc::clone(&db_lending_service),
     ));
