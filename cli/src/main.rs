@@ -101,16 +101,17 @@ async fn main() -> Result<()> {
     let shared_object_repo: Arc<dyn SharedObjectRepository + Send + Sync> =
         Arc::new(SharedObjectRepositoryImpl::new(db_conn.clone()));
 
-    let rpc_url = config
-        .networks
-        .get(&config.run_mode)
-        .unwrap()
-        .rpc_url
-        .as_deref()
-        .unwrap();
+    let network_config = config.networks.get(&config.run_mode).unwrap();
 
-    let sui_client = Arc::new(SuiClientBuilder::default().build(rpc_url).await?);
-    warn!("Sui client initialized with RPC URL: {}", rpc_url);
+    let sui_client = Arc::new(
+        SuiClientBuilder::default()
+            .build(network_config.rpc_url.clone())
+            .await?,
+    );
+    warn!(
+        "Sui client initialized with RPC URL: {}",
+        network_config.rpc_url,
+    );
 
     // register services
     let db_pool_service = Arc::new(PoolService::new(

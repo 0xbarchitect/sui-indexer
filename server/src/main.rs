@@ -94,10 +94,16 @@ async fn main() -> Result<()> {
 
     // initialize sui client
     let network_config = config.networks.get(&config.run_mode).unwrap();
-    let rpc_url = network_config.rpc_url.as_deref().unwrap();
 
-    let sui_client = Arc::new(SuiClientBuilder::default().build(rpc_url).await?);
-    warn!("Sui client initialized with RPC URL: {}", rpc_url);
+    let sui_client = Arc::new(
+        SuiClientBuilder::default()
+            .build(network_config.rpc_url.clone())
+            .await?,
+    );
+    warn!(
+        "Sui client initialized with RPC URL: {}",
+        network_config.rpc_url
+    );
 
     // services
     let db_pool_service = Arc::new(PoolService::new(
@@ -169,39 +175,14 @@ async fn main() -> Result<()> {
         // }
         // ```
 
-        // DISABLE: remote reader
         let (onchain_indexing, exit_sender) = setup_single_workflow(
             onchain_indexer,
-            "https://checkpoints.mainnet.sui.io".to_string(),
+            network_config.remote_store_url.clone(),
             config.indexer.start_checkpoint_number, /* initial checkpoint number */
             config.indexer.indexer_worker_count,    /* concurrency */
             None,                                   /* extra reader options */
         )
         .await?;
-
-        // ENABLE: Setup local reader
-
-        // let remote_store_url = if config.indexer.use_remote_store {
-        //     config
-        //         .networks
-        //         .get(&config.run_mode)
-        //         .and_then(|n| n.remote_store_url.clone())
-        // } else {
-        //     None
-        // };
-
-        // let start_seq_number = onchain_indexer.start_seq_number + 1;
-        // warn!("Start seq number {}", start_seq_number);
-
-        // let (onchain_indexing, exit_sender) = onchain_indexer::setup_local_reader(
-        //     onchain_indexer,
-        //     config.indexer.local_checkpoint_dir.clone(),
-        //     config.indexer.indexer_progress_filepath.clone(),
-        //     remote_store_url,                    /* optional remote store URL */
-        //     start_seq_number,                    /* initial checkpoint number */
-        //     config.indexer.indexer_worker_count, /* concurrency */
-        // )
-        // .await?;
 
         (
             tokio::spawn(async move {

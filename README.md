@@ -1,18 +1,23 @@
-# sui-mev
-The MEV bot for SUI
+# SUI indexer
+
+The indexer for SUI onchain data. It listens to tx events in checkpoint, parse to structured data. The decoded data is saved to PostgreSQL for further processing. This data can be used to build analytics applications or trading bot.
 
 ## Prerequisites
 
 - [Rust v1.85.0](https://www.rust-lang.org/tools/install)
-- [Postgres v14](https://hub.docker.com/_/postgres)
+- [Postgres v15](https://hub.docker.com/_/postgres)
 
 ## Setup
 
-- Create `.env` file from template, fill in all necessary credentials and secrets
+- Create `config.toml` file from template, fill in all necessary credentials and secrets
+
+```sh
+$ cp config.toml.example config.toml
+```
 
 - Install `libpq`
 
->   - [Guide for MacOSX](./libpq_mac.md)
+> - [Guide for MacOSX](./libpq_mac.md)
 
 ## Migration DB
 
@@ -34,9 +39,9 @@ $ cargo install diesel_cli --no-default-features --features postgres
 $ export DATABASE_URL=postgres://USERNAME:PASSWORD@HOST/DB
 ```
 
-*Note: all diesel commands must be executed in the `db` directory*
+_Note: all diesel commands must be executed in the `db` directory_
 
-- Create migration 
+- Create migration
 
 ```sh
 $ diesel migration generate MIGRATION_NAME
@@ -59,7 +64,7 @@ $ diesel migration revert
 ```sh
 $ diesel migration list
 ```
- 
+
 - Rerun migrations (for testing)
 
 ```sh

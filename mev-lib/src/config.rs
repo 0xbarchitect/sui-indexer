@@ -25,14 +25,6 @@ pub struct LendingConfig {
     pub market_object_id: Option<String>,
 }
 
-#[derive(Serialize, Deserialize, Debug, Clone)]
-pub struct NetworkConfig {
-    pub rpc_url: Option<String>,
-    pub remote_store_url: Option<String>,
-    pub ws_url: Option<String>,
-    pub api_url: Option<String>,
-}
-
 #[derive(Debug, Serialize, Deserialize, Clone)]
 pub struct CetusConfig {
     pub package_id: String,
@@ -179,6 +171,12 @@ pub struct DatabaseConfig {
     pub database_url: String,
     pub db_connection_pool_max_size: usize,
     pub db_connection_pool_idle_size: usize,
+}
+
+#[derive(Debug, Serialize, Deserialize, Clone)]
+pub struct NetworkConfig {
+    pub rpc_url: String,
+    pub remote_store_url: String,
 }
 
 #[derive(Debug, Serialize, Deserialize, Clone)]
